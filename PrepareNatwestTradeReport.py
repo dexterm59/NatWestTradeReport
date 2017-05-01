@@ -3,10 +3,29 @@ import datetime
 from datetime import datetime
 from datetime import timedelta
 from datetime import date
+import argparse
+
+parser = argparse.ArgumentParser(description='Test argument parser with filenames.')
+
+parser.add_argument('--headerfile', help='supply full path of the NW header file')
+parser.add_argument('--tradereport', help='supply full path of the input file')
+parser.add_argument('--outfile', help='supply full path of the output file')
+parser.add_argument('--logfile', help='supply full path of the log file')
+parser.add_argument('--loglevel', help='verbosity of log: high or low')
+
+args = parser.parse_args()
+
+if args.headerfile == None:
+          args.headerfile = 'NatWestHeaders.csv'
+if args.tradereport == None:
+          args.headerfile = 'PB-Export-New.csv'
+if args.headerfile == None:
+          args.headerfile = 'ProcessedReport.csv'
+
 
 
 print("*********************************** New Run **************************************")
-csvfile = open('NatWestHeaders.csv', 'r')
+csvfile = open(args.headerfile, 'r')
 sreader = csv.DictReader(csvfile)
 #create hdr as a list and put all the field ids in it
 hdr = []
@@ -18,9 +37,9 @@ csvfile.close()
 
 
 #open automatically generated report file as a dictionary
-tktfile = open('PBExport-New.csv', 'r', newline='')
+tktfile = open(args.tradereport, 'r', newline='')
 treader = csv.DictReader(tktfile,fieldnames=hdr)
-outputfile = open('ProcessedReport.csv', 'w', newline='')
+outputfile = open(args.outfile, 'w', newline='')
 writer = csv.writer(outputfile, delimiter=',')
 writer.writerow(hdr)
 line = []
