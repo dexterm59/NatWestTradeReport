@@ -7,6 +7,8 @@ import argparse
 import logging
 import os.path
 
+report_time = datetime.now()
+report_extension = report_time.strftime("%Y%m%d-%H%M%S")
 
 parser = argparse.ArgumentParser(description='Test argument parser with filenames.')
 
@@ -42,7 +44,7 @@ else:
     combinedreport = args.combinedreport
 
 if args.outfile == None:
-    outfile = defaultoutputfolder + 'ProcessedReport.csv'
+    outfile = defaultoutputfolder + 'WMC-Trades-' + report_extension + '.csv'
 else:
     outfile = args.outfile
 if args.logfile == None:
@@ -54,13 +56,17 @@ if args.loglevel == None:
 else:
     loglevel = args.loglevel
 
+#avoid overwriting previous reports
+
+combinedreport = os.path.splitext(combinedreport)[0] + report_extension + '.csv'
+
 numeric_level = getattr(logging, loglevel.upper())
 
 logging.basicConfig(filename=logfile, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=numeric_level)
 logging.info("Trade Proc started")
 
 logging.info("Script running with: headerfile: %s, tradereport: %s, outfile: %s, logfile: %s, loglevel: %s",
-             args.headerfile, args.tradereport, args.outfile, args.logfile, args.loglevel)
+             headerfile, tradereport, outfile, logfile, loglevel)
 
 
 
@@ -80,6 +86,9 @@ csvfile.close()
 logging.info("Opening trade input file %s.", tradereport)
 
 #combine input files
+#check on existence of new and amended trades files
+#combine files for processing and write new temp file to avoid collisions
+
 tfile_exists = os.path.isfile(tradereport)
 afile_exists = os.path.isfile(amendreport)
 cfile = open(combinedreport, 'w', newline='')
@@ -88,13 +97,13 @@ if tfile_exists:
     tktfile = open(tradereport, 'r', newline='')
     tktdata = tktfile.read()
     tktfile.close()
-    os.rename(tradereport, tradereport + '.old.csv')
+    os.rename(tradereport, os.path.splitext(tradereport)[0] + report_extension + '.csv')
     cfile.write(tktdata)
 if afile_exists:
     afile = open(amendreport, 'r', newline='')
     adata = afile.read()
     afile.close()
-    os.rename(amendreport, amendreport + '.old.csv')
+    os.rename(amendreport, os.path.splitext(amendreport)[0] + report_extension + '.csv')
     cfile.write(adata)
 cfile.close()
 if tfile_exists == False & afile_exists == False:
@@ -102,9 +111,6 @@ if tfile_exists == False & afile_exists == False:
     exit(0)
     
 
-#check on existence of amended trades file
-
-#combine files for processing and write new temp file to avoid collisions
 cfile = open(combinedreport, 'r', newline='')
 treader = csv.DictReader(cfile, fieldnames=hdr)
 
