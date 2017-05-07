@@ -174,5 +174,6 @@ for trow in treader:
     del line[:]
 logging.info("Processed %d new trades, %d amended trades", new_trades, amended_trades)
 
-tktfile.close()
+cfile.close()
+os.remove(combinedreport)
 outputfile.close()
