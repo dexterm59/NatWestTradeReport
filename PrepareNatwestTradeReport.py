@@ -23,7 +23,7 @@ parser.add_argument('--loglevel', help='verbosity of log: INFO, DEBUG')
 args = parser.parse_args()
 
 defaultinputfolder = 'c:/Users/Public/Documents/FENICS/batch/'
-defaultoutputfolder = 'c:/Users/Public/Documents/FENICS/batch/'
+defaultoutputfolder = 'c:/Users/Public/Documents/FENICS/batch/NWTosend'
 defaultlogfolder = 'c:/Users/Public/Documents/FENICS/batch/'
 
 if args.headerfile == None:
