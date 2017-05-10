@@ -31,6 +31,8 @@ pw = config['natwest']['password']
 logfile = config['natwest']['logfile']
 loglevel = config['natwest']['loglevel']
 
+numeric_level = getattr(logging, loglevel.upper())
+
 logging.basicConfig(filename=logfile, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=numeric_level)
 logging.info("started")
 
@@ -53,7 +55,7 @@ if not files:
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect(hostname, username=user, password=pw)
+ssh.connect(server, username=user, password=pw)
 sftp = ssh.open_sftp()
 sftp.chdir(remote_dir)
 

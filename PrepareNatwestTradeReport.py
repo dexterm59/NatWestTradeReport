@@ -18,13 +18,18 @@ parser.add_argument('--amendreport', help='supply full path of the amended trade
 parser.add_argument('--combinedreport', help='supply full path of the combined trade file')
 parser.add_argument('--outfile', help='supply full path of the output file')
 parser.add_argument('--logfile', help='supply full path of the log file')
-parser.add_argument('--loglevel', help='verbosity of log: INFO, DEBUG')
+parser.add_argument('--loglevel', help='verbosity of logging: INFO, DEBUG')
 
 args = parser.parse_args()
 
-defaultinputfolder = 'c:/Users/Public/Documents/FENICS/batch/'
-defaultoutputfolder = 'c:/Users/Public/Documents/FENICS/batch/NWTosend'
-defaultlogfolder = 'c:/Users/Public/Documents/FENICS/batch/'
+defaultinputfolder = 'c:/batch_test/batch/'
+defaultoutputfolder = 'c:/batch_test/batch/NWTosend/'
+defaultlogfolder = 'c:/batch_test/batch/Log/'
+defaultprocessedfolder = 'c:/batch_test/batch/ProcessedInput/'
+newtradefilename = 'NewTrades'
+amendedfilename = 'AmendedTrades'
+
+processedfolder = defaultprocessedfolder
 
 if args.headerfile == None:
     headerfile = 'NatWestHeaders.csv'
@@ -97,16 +102,17 @@ if tfile_exists:
     tktfile = open(tradereport, 'r', newline='')
     tktdata = tktfile.read()
     tktfile.close()
-    os.rename(tradereport, os.path.splitext(tradereport)[0] + report_extension + '.csv')
+    os.rename(tradereport, processedfolder + newtradefilename + report_extension + '.csv')
     cfile.write(tktdata)
 if afile_exists:
     afile = open(amendreport, 'r', newline='')
     adata = afile.read()
     afile.close()
-    os.rename(amendreport, os.path.splitext(amendreport)[0] + report_extension + '.csv')
+    os.rename(amendreport, processedfolder + amendedfilename + report_extension + '.csv')
     cfile.write(adata)
 cfile.close()
 if tfile_exists == False & afile_exists == False:
+    cfile = open(combinedreport, 'r', newline='')
     logging.info("No files to process. Exiting...")
     exit(0)
     
