@@ -112,7 +112,6 @@ if afile_exists:
     cfile.write(adata)
 cfile.close()
 if tfile_exists == False & afile_exists == False:
-    cfile = open(combinedreport, 'r', newline='')
     logging.info("No files to process. Exiting...")
     exit(0)
     
